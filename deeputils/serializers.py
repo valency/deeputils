@@ -10,7 +10,7 @@ from rest_framework.serializers import empty
 from deeputils.exceptions import *
 
 
-def validate_id(model, account, oid):
+def validate_id(model, account, oid, allow_none=True):
     if oid is not None:
         try:
             obj = model.objects.get(pk=oid)
@@ -20,6 +20,8 @@ def validate_id(model, account, oid):
                 raise serializers.ValidationError(Unauthorized.default_detail)
         except ObjectDoesNotExist:
             raise serializers.ValidationError(NotFound.default_detail)
+    elif not allow_none:
+        raise serializers.ValidationError(NotFound.default_detail)
     return oid
 
 
@@ -126,3 +128,10 @@ class ObjectGetViewSerializer(serializers.Serializer):
 
     def validate_id(self, value):
         return validate_id(self.model, self.account, value)
+
+
+class ObjectDeleteViewSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+
+    def validate_id(self, value):
+        return validate_id(self.model, self.account, value, False)
