@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='deeputils',
-    version='0.8.31',
+    version='0.9.4',
     packages=['deeputils'],
     url='http://open.deepera.com',
     license='CPL-3.0',
