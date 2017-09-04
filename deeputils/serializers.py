@@ -1,13 +1,12 @@
 import json
 from json.decoder import JSONDecodeError
 
+from deeputils.exceptions import *
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
 from django.db import models
 from rest_framework import serializers
 from rest_framework.serializers import empty
-
-from deeputils.exceptions import *
 
 
 def validate_id(model, account, oid, allow_none=True):
@@ -27,12 +26,13 @@ def validate_id(model, account, oid, allow_none=True):
 
 class JSONField(serializers.CharField):
     def run_validation(self, data=empty):
-        try:
-            json.loads(data) if data is not None else None
-        except JSONDecodeError:
-            raise ValidationError("Data is not in JSON type.")
+        if data is not empty and data is not None:
+            try:
+                json.loads(data)
+            except JSONDecodeError:
+                raise ValidationError("Data is not in JSON type.")
         return super().run_validation(data)
-
+        
     def to_representation(self, data):
         return json.loads(data) if data is not None else None
 
