@@ -103,8 +103,14 @@ class ModifyViewSerializer(serializers.Serializer):
         return data
 
 
-class ObjectModifyViewSerializer(ModifyViewSerializer):
+class ObjectPutViewSerializer(ModifyViewSerializer):
     id = serializers.IntegerField()
+
+    def __init__(self, model, account, allowed_fields, *args, **kwargs):
+        self.model = model
+        self.account = account
+        self.allowed_fields = allowed_fields
+        super().__init__(*args, **kwargs)
 
     def validate_id(self, value):
         return validate_id(self.model, self.account, value)
@@ -112,6 +118,11 @@ class ObjectModifyViewSerializer(ModifyViewSerializer):
 
 class ObjectPostViewSerializer(serializers.Serializer):
     id = serializers.IntegerField(required=False)
+
+    def __init__(self, model, account, *args, **kwargs):
+        self.model = model
+        self.account = account
+        super().__init__(*args, **kwargs)
 
     def validate_id(self, value):
         if value is not None:
@@ -126,12 +137,22 @@ class ObjectPostViewSerializer(serializers.Serializer):
 class ObjectGetViewSerializer(serializers.Serializer):
     id = serializers.IntegerField(required=False)
 
+    def __init__(self, model, account, *args, **kwargs):
+        self.model = model
+        self.account = account
+        super().__init__(*args, **kwargs)
+
     def validate_id(self, value):
         return validate_id(self.model, self.account, value)
 
 
 class ObjectDeleteViewSerializer(serializers.Serializer):
     id = serializers.IntegerField()
+
+    def __init__(self, model, account, *args, **kwargs):
+        self.model = model
+        self.account = account
+        super().__init__(*args, **kwargs)
 
     def validate_id(self, value):
         return validate_id(self.model, self.account, value, False)
