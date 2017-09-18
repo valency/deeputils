@@ -76,6 +76,9 @@ class ModifyViewSerializer(serializers.Serializer):
         del data['field']
         del data['value']
         data = {**data, **dict(zip(field_list, value_list))}
+        # Fix data format issues
+        data = self.fix_boolean(data)
+        data = self.fix_empty(data)
         data = self.extend_validate(data)
         # Avoid the strange null id problem
         oid = None
@@ -89,7 +92,7 @@ class ModifyViewSerializer(serializers.Serializer):
             data['id'] = oid
         # Continue
         if pp.is_valid():
-            return self.fix_boolean(data)
+            return data
         else:
             raise serializers.ValidationError(pp.errors)
 
@@ -97,6 +100,12 @@ class ModifyViewSerializer(serializers.Serializer):
         for field, value in data.items():
             if type(self.model._meta.get_field(field)) == models.fields.BooleanField:
                 data[field] = value.capitalize()
+        return data
+
+    def fix_empty(self, data):
+        for field, value in data.items():
+            if value == '':
+                data[field] = None
         return data
 
     def extend_validate(self, data):
