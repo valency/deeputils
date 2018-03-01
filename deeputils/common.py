@@ -4,7 +4,7 @@ from django.utils.termcolors import colorize
 
 
 def log(msg, color="green"):
-    print(colorize("[" + format_datetime(datetime.now()) + "] " + msg, fg=color))
+    print(colorize("[" + format_datetime(datetime.now()) + "]", fg=color), msg)
 
 
 def dict_search(d, k, v):
@@ -31,3 +31,7 @@ def format_datetime(t):
 
 def format_date(t):
     return t.strftime('%Y-%m-%d')
+
+
+def format_time(t):
+    return t.strftime('%H:%M:%S')
