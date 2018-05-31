@@ -2,10 +2,10 @@ from distutils.core import setup
 
 setup(
     name='deeputils',
-    version='1.5.8',
+    version='1.5.31',
     packages=['deeputils'],
     url='https://github.com/valency/deeputils',
-    download_url='https://github.com/valency/deeputils/releases/download/v1.5.8/deeputils-1.5.8.tar.gz',
+    download_url='https://github.com/valency/deeputils/releases/download/v1.5.31/deeputils-1.5.31.tar.gz',
     license='CPL-3.0',
     author='Deepera Co., Ltd.',
     author_email='yding@deepera.com',
