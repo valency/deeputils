@@ -28,7 +28,7 @@ def dict_search(d, k, v):
     :param d: dictionary array
     :param k: key
     :param v: value
-    :return: the first index of the dictionary in the array with the specific key / value
+    :return: the index of the first dictionary in the array with the specific key / value
     """
     for i in range(0, len(d)):
         if d[i][k] == v:
@@ -36,16 +36,16 @@ def dict_search(d, k, v):
     return None
 
 
-def tuple_search(t, k, v):
+def tuple_search(t, i, v):
     """
-    Search tuple array by key and value
+    Search tuple array by index and value
     :param t: tuple array
-    :param k: key
+    :param i: index of the value in each tuple
     :param v: value
-    :return: the first index of the tuple in the array with the specific key / value
+    :return: the first tuple in the array with the specific index / value
     """
     for e in t:
-        if e[k] == v:
+        if e[i] == v:
             return e
     return None
 
@@ -89,16 +89,9 @@ def format_time(t=datetime.now()):
 
 
 if __name__ == "__main__":
-    a = [{
-        'a': 1,
-        'b': 2
-    }, {
-        'a': 3,
-        'b': 4
-    }]
-    log(dict_search(a, 'a', 1))
-    log(tuple_search(a, 'a', 1))
-    log(count_digits(3.1415926))
+    log(digits(3.1415926))
+    log(dict_search([{'a': 1, 'b': 2}, {'a': 3, 'b': 4}], 'a', 1))
+    log(tuple_search([('a', 1), ('b', 2), ('a', 3), ('b', 4)], 1, 1))
     log(string_insert('apple', ' is strugg', 3))
     log(format_datetime())
     log(format_date())

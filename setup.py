@@ -2,10 +2,9 @@ from distutils.core import setup
 
 setup(
     name='deeputils',
-    version='1.5.31',
+    version='1.6.19',
     packages=['deeputils'],
     url='https://github.com/valency/deeputils',
-    download_url='https://github.com/valency/deeputils/releases/download/v1.5.31/deeputils-1.5.31.tar.gz',
     license='CPL-3.0',
     author='Deepera Co., Ltd.',
     author_email='yding@deepera.com',
@@ -13,6 +12,7 @@ setup(
     keywords=['utils', 'logging'],
     install_requires=[
         'django',
-        'djangorestframework'
+        'djangorestframework',
+        'coreapi'
     ],
 )
