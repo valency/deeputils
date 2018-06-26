@@ -59,8 +59,8 @@ class ModifyModelSerializer(serializers.ModelSerializer):
 
 
 class ModifyViewSerializer(serializers.Serializer):
-    field = serializers.CharField()
-    value = serializers.CharField()
+    field = serializers.CharField(help_text='Fields to be modified, separated by comma')
+    value = serializers.CharField(help_text='Desired values of the modified fields, separated by comma')
 
     def validate_field(self, value):
         for val in value.split(','):
@@ -69,8 +69,8 @@ class ModifyViewSerializer(serializers.Serializer):
         return value
 
     def validate(self, data):
-        field_list = data['field'].split(',')
-        value_list = data['value'].split(',')
+        field_list = [i.strip() for i in data['field'].split(',')]
+        value_list = [i.strip() for i in data['value'].split(',')]
         if len(field_list) != len(value_list):
             raise serializers.ValidationError('The lengths of fields and values do not match.')
         del data['field']
@@ -113,7 +113,7 @@ class ModifyViewSerializer(serializers.Serializer):
 
 
 class ObjectPutViewSerializer(ModifyViewSerializer):
-    id = serializers.IntegerField()
+    id = serializers.IntegerField(help_text='Object ID')
 
     def __init__(self, model=None, account=None, allowed_fields=tuple(), *args, **kwargs):
         self.model = model
@@ -126,7 +126,7 @@ class ObjectPutViewSerializer(ModifyViewSerializer):
 
 
 class ObjectPostViewSerializer(serializers.Serializer):
-    id = serializers.IntegerField(required=False)
+    id = serializers.IntegerField(help_text='Object ID', required=False)
 
     def __init__(self, model=None, account=None, *args, **kwargs):
         self.model = model
@@ -144,7 +144,7 @@ class ObjectPostViewSerializer(serializers.Serializer):
 
 
 class ObjectGetViewSerializer(serializers.Serializer):
-    id = serializers.IntegerField(required=False)
+    id = serializers.IntegerField(help_text='Object ID', required=False)
 
     def __init__(self, model=None, account=None, *args, **kwargs):
         self.model = model
@@ -156,7 +156,7 @@ class ObjectGetViewSerializer(serializers.Serializer):
 
 
 class ObjectDeleteViewSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
+    id = serializers.IntegerField(help_text='Object ID')
 
     def __init__(self, model=None, account=None, *args, **kwargs):
         self.model = model

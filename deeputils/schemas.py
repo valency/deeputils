@@ -23,6 +23,9 @@ class RefinedViewSchema(AutoSchema):
         if method == 'GET':
             link._fields = tuple(self.get_fields(method))
             link._encoding = 'path'
+        elif method == 'DELETE':
+            link._fields = tuple(self.get_fields(method))
+            link._encoding = 'application/json'
         return link
 
 
