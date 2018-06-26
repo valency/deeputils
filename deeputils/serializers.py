@@ -115,7 +115,7 @@ class ModifyViewSerializer(serializers.Serializer):
 class ObjectPutViewSerializer(ModifyViewSerializer):
     id = serializers.IntegerField()
 
-    def __init__(self, model, account, allowed_fields, *args, **kwargs):
+    def __init__(self, model=None, account=None, allowed_fields=tuple(), *args, **kwargs):
         self.model = model
         self.account = account
         self.allowed_fields = allowed_fields
@@ -128,7 +128,7 @@ class ObjectPutViewSerializer(ModifyViewSerializer):
 class ObjectPostViewSerializer(serializers.Serializer):
     id = serializers.IntegerField(required=False)
 
-    def __init__(self, model, account, *args, **kwargs):
+    def __init__(self, model=None, account=None, *args, **kwargs):
         self.model = model
         self.account = account
         super().__init__(*args, **kwargs)
@@ -146,7 +146,7 @@ class ObjectPostViewSerializer(serializers.Serializer):
 class ObjectGetViewSerializer(serializers.Serializer):
     id = serializers.IntegerField(required=False)
 
-    def __init__(self, model, account, *args, **kwargs):
+    def __init__(self, model=None, account=None, *args, **kwargs):
         self.model = model
         self.account = account
         super().__init__(*args, **kwargs)
@@ -158,7 +158,7 @@ class ObjectGetViewSerializer(serializers.Serializer):
 class ObjectDeleteViewSerializer(serializers.Serializer):
     id = serializers.IntegerField()
 
-    def __init__(self, model, account, *args, **kwargs):
+    def __init__(self, model=None, account=None, *args, **kwargs):
         self.model = model
         self.account = account
         super().__init__(*args, **kwargs)

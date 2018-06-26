@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='deeputils',
-    version='1.6.19',
+    version='1.6.26',
     packages=['deeputils'],
     url='https://github.com/valency/deeputils',
     license='CPL-3.0',
@@ -13,6 +13,7 @@ setup(
     install_requires=[
         'django',
         'djangorestframework',
-        'coreapi'
+        'coreapi',
+        'markdown'
     ],
 )
