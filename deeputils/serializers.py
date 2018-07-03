@@ -44,9 +44,6 @@ class JSONField(serializers.CharField):
     def to_representation(self, data):
         return json.loads(data) if data is not None else None
 
-    def to_internal_value(self, data):
-        return json.loads(data) if data is not None else None
-
 
 class ModifyModelSerializer(serializers.ModelSerializer):
     def __init__(self, meta_model, meta_fields, *args, **kwargs):
