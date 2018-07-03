@@ -1,7 +1,12 @@
+import json
+from json.decoder import JSONDecodeError
+
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ValidationError
 from django.db import models
 from rest_framework import serializers
 from rest_framework.exceptions import NotFound, NotAuthenticated
+from rest_framework.serializers import empty
 
 
 def validate_id(model, account, oid, allow_none=True):
@@ -25,6 +30,22 @@ class ArrayField(serializers.CharField):
 
     def to_internal_value(self, data):
         return data.split(',') if data is not None else None
+
+
+class JSONField(serializers.CharField):
+    def run_validation(self, data=empty):
+        if data is not empty and data is not None:
+            try:
+                json.loads(data)
+            except JSONDecodeError:
+                raise ValidationError("Data is not in JSON type.")
+        return super().run_validation(data)
+
+    def to_representation(self, data):
+        return json.loads(data) if data is not None else None
+
+    def to_internal_value(self, data):
+        return json.loads(data) if data is not None else None
 
 
 class ModifyModelSerializer(serializers.ModelSerializer):
