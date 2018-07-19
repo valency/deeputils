@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='deeputils',
-    version='1.7.19',
+    version='1.7.20',
     packages=['deeputils'],
     url='https://github.com/valency/deeputils',
     license='CPL-3.0',

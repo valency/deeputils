@@ -1,7 +1,7 @@
 import random
 import string
 from datetime import datetime
-
+import sys
 from django.utils.termcolors import colorize
 
 
@@ -15,6 +15,15 @@ def log(msg, color="green"):
     print(colorize("[" + format_datetime(datetime.now()) + "]", fg=color), msg)
 
 
+def progress(count, total, suffix=''):
+    bar_len = 60
+    filled_len = int(round(bar_len * count / float(total)))
+    percents = round(100.0 * count / float(total), 1)
+    bar = '=' * filled_len + '-' * (bar_len - filled_len)
+    sys.stdout.write('[%s] %s%s %s\r' % (bar, percents, '%', suffix))
+    sys.stdout.flush()
+
+
 def digits(n):
     """
     Count the digits of a given float number
@@ -24,8 +33,16 @@ def digits(n):
     return len(str(n).split('.')[-1])
 
 
-def chars(n):
+def random_chars(n):
     return ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(n))
+
+
+def random_letters(n):
+    return ''.join(random.SystemRandom().choice(string.ascii_letters) for _ in range(n))
+
+
+def random_numbers(n):
+    return ''.join(random.SystemRandom().choice(string.digits) for _ in range(n))
 
 
 def dict_search(d, k, v):
