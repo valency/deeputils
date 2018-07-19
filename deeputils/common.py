@@ -1,3 +1,5 @@
+import random
+import string
 from datetime import datetime
 
 from django.utils.termcolors import colorize
@@ -20,6 +22,10 @@ def digits(n):
     :return: number of digits
     """
     return len(str(n).split('.')[-1])
+
+
+def chars(n):
+    return ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(n))
 
 
 def dict_search(d, k, v):
@@ -90,6 +96,7 @@ def format_time(t=datetime.now()):
 
 if __name__ == "__main__":
     log(digits(3.1415926))
+    log(chars(3))
     log(dict_search([{'a': 1, 'b': 2}, {'a': 3, 'b': 4}], 'a', 1))
     log(tuple_search([('a', 1), ('b', 2), ('a', 3), ('b', 4)], 1, 1))
     log(string_insert('apple', ' is strugg', 3))
