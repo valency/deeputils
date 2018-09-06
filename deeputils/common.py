@@ -1,7 +1,9 @@
 import random
 import string
-from datetime import datetime
 import sys
+import time
+from datetime import datetime
+
 from django.utils.termcolors import colorize
 
 
@@ -15,15 +17,6 @@ def log(msg, color="green"):
     print(colorize("[" + format_datetime(datetime.now()) + "]", fg=color), msg)
 
 
-def progress(count, total, suffix=''):
-    bar_len = 60
-    filled_len = int(round(bar_len * count / float(total)))
-    percents = round(100.0 * count / float(total), 1)
-    bar = '=' * filled_len + '-' * (bar_len - filled_len)
-    sys.stdout.write('[%s] %s%s %s\r' % (bar, percents, '%', suffix))
-    sys.stdout.flush()
-
-
 def digits(n):
     """
     Count the digits of a given float number
@@ -34,29 +27,74 @@ def digits(n):
 
 
 def random_chars(n):
+    """
+    Generate a random string from a-zA-Z0-9
+    :param n: length of the string
+    :return: the random string
+    """
     return ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(n))
 
 
 def random_letters(n):
+    """
+    Generate a random string from a-zA-Z
+    :param n: length of the string
+    :return: the random string
+    """
     return ''.join(random.SystemRandom().choice(string.ascii_letters) for _ in range(n))
 
 
 def random_numbers(n):
+    """
+    Generate a random string from 0-9
+    :param n: length of the string
+    :return: the random string
+    """
     return ''.join(random.SystemRandom().choice(string.digits) for _ in range(n))
 
 
 def dict_search(d, k, v):
     """
-    Search dictionary array by key and value
-    :param d: dictionary array
+    Search dictionary list by key and value
+    :param d: dictionary list
     :param k: key
     :param v: value
     :return: the index of the first dictionary in the array with the specific key / value
     """
-    for i in range(0, len(d)):
+    for i in range(len(d)):
         if d[i][k] == v:
             return i
     return None
+
+
+def dict_merge(a, b, k):
+    """
+    Merge two dictionary lists
+    :param a: original list
+    :param b: alternative list, element will replace the one in original list with same key
+    :param k: key
+    :return: the merged list
+    """
+    c = a.copy()
+    for j in range(len(b)):
+        flag = False
+        for i in range(len(c)):
+            if c[i][k] == b[j][k]:
+                c[i] = b[j].copy()
+                flag = True
+        if not flag:
+            c.append(b[j].copy())
+    return c
+
+
+def dict_sort(d, k):
+    """
+    Sort a dictionary list by key
+    :param d: dictionary list
+    :param k: key
+    :return: sorted dictionary list
+    """
+    return sorted(d.copy(), key=lambda i: i[k])
 
 
 def tuple_search(t, i, v):
@@ -84,39 +122,64 @@ def string_insert(str1, str2, i):
     return str1[:i] + str2 + str1[i:]
 
 
-def format_datetime(t=datetime.now()):
+def format_datetime(t=None):
     """
     Format a datetime object into yyyy-MM-dd hh:mm:ss
     :param t: datetime object, default: now
     :return: the formatted string
     """
-    return t.strftime('%Y-%m-%d %H:%M:%S')
+    return (datetime.now() if t is None else t).strftime('%Y-%m-%d %H:%M:%S')
 
 
-def format_date(t=datetime.now()):
+def format_date(t=None):
     """
     Format a datetime object into yyyy-MM-dd
     :param t: datetime object, default: now
     :return: the formatted string
     """
-    return t.strftime('%Y-%m-%d')
+    return (datetime.now() if t is None else t).strftime('%Y-%m-%d')
 
 
-def format_time(t=datetime.now()):
+def format_time(t=None):
     """
     Format a datetime object into hh:mm:ss
     :param t: datetime object, default: now
     :return: the formatted string
     """
-    return t.strftime('%H:%M:%S')
+    return (datetime.now() if t is None else t).strftime('%H:%M:%S')
+
+
+def progress(count, total, prefix='', suffix='', length=60):
+    """
+    Show a progress bar
+    :param count: current progress
+    :param total: total progress
+    :param prefix: prefix shown before the progress bar
+    :param suffix: suffix shown after the progress bar
+    :param length: length of the progress bar, default: 60
+    :return: none
+    """
+    bar_len = length
+    filled_len = int(round(bar_len * count / float(total)))
+    percents = round(100.0 * count / float(total), 1)
+    bar = '=' * filled_len + '-' * (bar_len - filled_len)
+    sys.stdout.write('%s[%s] %s%s%s\r' % (prefix, bar, percents, '%', ' ' + suffix))
+    sys.stdout.flush()
 
 
 if __name__ == "__main__":
     log(digits(3.1415926))
-    log(chars(3))
+    log(random_chars(3))
+    log(random_letters(3))
+    log(random_numbers(3))
     log(dict_search([{'a': 1, 'b': 2}, {'a': 3, 'b': 4}], 'a', 1))
+    log(dict_merge([{'a': 1, 'b': 2}, {'a': 3, 'b': 4}], [{'a': 1, 'b': 3}, {'a': 2, 'b': 4}], 'a'))
+    log(dict_sort([{'a': 1, 'b': 2}, {'a': 3, 'b': 4}, {'a': 1, 'b': 3}, {'a': 2, 'b': 4}], 'a'))
     log(tuple_search([('a', 1), ('b', 2), ('a', 3), ('b', 4)], 1, 1))
     log(string_insert('apple', ' is strugg', 3))
-    log(format_datetime())
+    log(format_datetime(datetime.fromtimestamp(datetime.now().timestamp() + 3600 * 24)))
     log(format_date())
     log(format_time())
+    for x in range(100):
+        progress(x, 100)
+        time.sleep(0.02)
