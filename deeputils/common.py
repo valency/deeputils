@@ -97,6 +97,33 @@ def dict_sort(d, k):
     return sorted(d.copy(), key=lambda i: i[k])
 
 
+def dict_format_type(d, source, modify):
+    """
+    Replace the values of a dict with certain type to other values
+    :param d: the dictionary
+    :param source: the source type, e.g., int
+    :param modify: the modification method, e.g., return the string format of an int
+    :return:
+    """
+    if type(d) != dict:
+        if type(d) == source:
+            return modify(d)
+        else:
+            return d
+    else:
+        dd = dict()
+        for key, value in d.items():
+            if type(value) == list:
+                dd[key] = [dict_format_type(i, source, modify) for i in value]
+            elif type(value) == dict:
+                dd[key] = dict_format_type(value, source, modify)
+            elif type(value) == source:
+                dd[key] = modify(value)
+            else:
+                dd[key] = value
+        return dd
+
+
 def tuple_search(t, i, v):
     """
     Search tuple array by index and value
@@ -168,6 +195,10 @@ def progress(count, total, prefix='', suffix='', length=60):
 
 
 if __name__ == "__main__":
+    def modify(u):
+        return str(u + 1)
+
+
     log(digits(3.1415926))
     log(random_chars(3))
     log(random_letters(3))
@@ -175,8 +206,9 @@ if __name__ == "__main__":
     log(dict_search([{'a': 1, 'b': 2}, {'a': 3, 'b': 4}], 'a', 1))
     log(dict_merge([{'a': 1, 'b': 2}, {'a': 3, 'b': 4}], [{'a': 1, 'b': 3}, {'a': 2, 'b': 4}], 'a'))
     log(dict_sort([{'a': 1, 'b': 2}, {'a': 3, 'b': 4}, {'a': 1, 'b': 3}, {'a': 2, 'b': 4}], 'a'))
+    log(dict_format_type({'a': 1, 'b': 'b', 'c': [1, 2], 'd': {'a': 1, 'b': 2}, 'e': [{'a': 1, 'b': 2}, {'a': 3, 'b': 4}]}, int, modify))
     log(tuple_search([('a', 1), ('b', 2), ('a', 3), ('b', 4)], 1, 1))
-    log(string_insert('apple', ' is strugg', 3))
+    log(string_insert('apple', ' strugg', 3))
     log(format_datetime(datetime.fromtimestamp(datetime.now().timestamp() + 3600 * 24)))
     log(format_date())
     log(format_time())
