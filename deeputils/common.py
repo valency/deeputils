@@ -97,28 +97,48 @@ def dict_sort(d, k):
     return sorted(d.copy(), key=lambda i: i[k])
 
 
-def dict_format_type(d, source, modify):
+def dict_flatten(d):
+    """
+    Replace the values of a dict with certain type to other values
+    :param d: the dictionary
+    :return: flattened dictionary
+    """
+    if type(d) != dict:
+        return d
+    else:
+        dd = dict()
+        for key, value in d.items():
+            if type(value) == dict:
+                for k, v in value.items():
+                    dd[key + '_' + k] = dict_flatten(v)
+            else:
+                dd[key] = value
+        return dd
+
+
+def dict_format_type(d, source, formatter, include_list=True):
     """
     Replace the values of a dict with certain type to other values
     :param d: the dictionary
     :param source: the source type, e.g., int
-    :param modify: the modification method, e.g., return the string format of an int
-    :return:
+    :param formatter: the formatter method, e.g., return the string format of an int
+    :param include_list: whether list should be formatted, otherwise list will be considered as source type
+    :return: formatted dictionary
     """
     if type(d) != dict:
         if type(d) == source:
-            return modify(d)
+            return formatter(d)
         else:
             return d
     else:
         dd = dict()
         for key, value in d.items():
-            if type(value) == list:
-                dd[key] = [dict_format_type(i, source, modify) for i in value]
+            if include_list and type(value) == list:
+                dd[key] = [dict_format_type(i, source, formatter) for i in value]
             elif type(value) == dict:
-                dd[key] = dict_format_type(value, source, modify)
+                dd[key] = dict_format_type(value, source, formatter)
             elif type(value) == source:
-                dd[key] = modify(value)
+                dd[key] = formatter(value)
             else:
                 dd[key] = value
         return dd
@@ -194,10 +214,9 @@ def progress(count, total, prefix='', suffix='', length=60):
     sys.stdout.flush()
 
 
-if __name__ == "__main__":
+def test():
     def modify(u):
         return str(u + 1)
-
 
     log(digits(3.1415926))
     log(random_chars(3))
@@ -206,6 +225,7 @@ if __name__ == "__main__":
     log(dict_search([{'a': 1, 'b': 2}, {'a': 3, 'b': 4}], 'a', 1))
     log(dict_merge([{'a': 1, 'b': 2}, {'a': 3, 'b': 4}], [{'a': 1, 'b': 3}, {'a': 2, 'b': 4}], 'a'))
     log(dict_sort([{'a': 1, 'b': 2}, {'a': 3, 'b': 4}, {'a': 1, 'b': 3}, {'a': 2, 'b': 4}], 'a'))
+    log(dict_flatten({'a': 1, 'b': 'b', 'c': [1, 2], 'd': {'a': 1, 'b': 2}, 'e': [{'a': 1, 'b': 2}, {'a': 3, 'b': 4}]}))
     log(dict_format_type({'a': 1, 'b': 'b', 'c': [1, 2], 'd': {'a': 1, 'b': 2}, 'e': [{'a': 1, 'b': 2}, {'a': 3, 'b': 4}]}, int, modify))
     log(tuple_search([('a', 1), ('b', 2), ('a', 3), ('b', 4)], 1, 1))
     log(string_insert('apple', ' strugg', 3))
@@ -215,3 +235,7 @@ if __name__ == "__main__":
     for x in range(100):
         progress(x, 100)
         time.sleep(0.02)
+
+
+if __name__ == "__main__":
+    test()
