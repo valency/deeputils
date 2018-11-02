@@ -3,6 +3,7 @@ import string
 import sys
 import time
 from datetime import datetime
+from heapq import heappush, heappop
 
 from django.utils.termcolors import colorize
 
@@ -95,6 +96,25 @@ def dict_sort(d, k):
     :return: sorted dictionary list
     """
     return sorted(d.copy(), key=lambda i: i[k])
+
+
+def dict_top(d, k, n, reverse=False):
+    """
+    Return top n of a dictionary list sorted by key
+    :param d: dictionary list
+    :param k: key
+    :param n: top n
+    :param reverse: whether the value should be reversed
+    :return: top n of the sorted dictionary list
+    """
+    h = list()
+    for i in range(len(d)):
+        heappush(h, (-d[i][k] if reverse else d[i][k], i))
+    r = list()
+    while len(r) < n and len(h) > 0:
+        _, i = heappop(h)
+        r.append(d[i].copy())
+    return r
 
 
 def dict_flatten(d):
@@ -225,6 +245,7 @@ def test():
     log(dict_search([{'a': 1, 'b': 2}, {'a': 3, 'b': 4}], 'a', 1))
     log(dict_merge([{'a': 1, 'b': 2}, {'a': 3, 'b': 4}], [{'a': 1, 'b': 3}, {'a': 2, 'b': 4}], 'a'))
     log(dict_sort([{'a': 1, 'b': 2}, {'a': 3, 'b': 4}, {'a': 1, 'b': 3}, {'a': 2, 'b': 4}], 'a'))
+    log(dict_top([{'a': 1, 'b': 2}, {'a': 3, 'b': 4}, {'a': 1, 'b': 3}, {'a': 2, 'b': 4}], 'a', 2, reverse=True))
     log(dict_flatten({'a': 1, 'b': 'b', 'c': [1, 2], 'd': {'a': 1, 'b': 2}, 'e': [{'a': 1, 'b': 2}, {'a': 3, 'b': 4}]}))
     log(dict_format_type({'a': 1, 'b': 'b', 'c': [1, 2], 'd': {'a': 1, 'b': 2}, 'e': [{'a': 1, 'b': 2}, {'a': 3, 'b': 4}]}, int, modify))
     log(tuple_search([('a', 1), ('b', 2), ('a', 3), ('b', 4)], 1, 1))
