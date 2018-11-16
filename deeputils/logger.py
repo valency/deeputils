@@ -8,8 +8,8 @@ from django.utils.termcolors import colorize
 
 class Formatter(logging.Formatter):
     color = {
-        logging.DEBUG: 'green',
-        logging.INFO: 'cyan',
+        logging.DEBUG: 'cyan',
+        logging.INFO: 'green',
         logging.WARNING: 'yellow',
         logging.ERROR: 'red',
         logging.CRITICAL: 'magenta',
