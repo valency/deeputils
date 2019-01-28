@@ -145,23 +145,42 @@ def dict_format_type(d, source, formatter, include_list=True):
     :param include_list: whether list should be formatted, otherwise list will be considered as source type
     :return: formatted dictionary
     """
-    if type(d) != dict:
-        if type(d) == source:
+    if not isinstance(d, dict):
+        if isinstance(d, source):
             return formatter(d)
         else:
             return d
     else:
         dd = dict()
         for key, value in d.items():
-            if include_list and type(value) == list:
+            if include_list and isinstance(value, list):
                 dd[key] = [dict_format_type(i, source, formatter) for i in value]
-            elif type(value) == dict:
+            elif isinstance(value, dict):
                 dd[key] = dict_format_type(value, source, formatter)
-            elif type(value) == source:
+            elif isinstance(value, source):
                 dd[key] = formatter(value)
             else:
                 dd[key] = value
         return dd
+
+
+def dict_remove_key(d, k):
+    """
+    Recursively remove a key from a dict
+    :param d: the dictionary
+    :param k: key which should be removed
+    :return: formatted dictionary
+    """
+    dd = dict()
+    for key, value in d.items():
+        if not key == k:
+            if isinstance(value, dict):
+                dd[key] = dict_remove_key(value, k)
+            elif isinstance(value, list):
+                dd[key] = [dict_remove_key(i, k) for i in value]
+            else:
+                dd[key] = value
+    return dd
 
 
 def tuple_search(t, i, v):
