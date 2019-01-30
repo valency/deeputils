@@ -5,18 +5,6 @@ import time
 from datetime import datetime
 from heapq import heappush, heappop
 
-from django.utils.termcolors import colorize
-
-
-def log(msg, color="green"):
-    """
-    Log with colored timestamp
-    :param msg: message
-    :param color: color, default: green
-    :return: none
-    """
-    print(colorize("[" + format_datetime(datetime.now()) + "]", fg=color), msg)
-
 
 def digits(n):
     """
@@ -119,7 +107,7 @@ def dict_top(d, k, n, reverse=False):
 
 def dict_flatten(d):
     """
-    Replace the values of a dict with certain type to other values
+    Replace nested dict keys to underscore-connected keys
     :param d: the dictionary
     :return: flattened dictionary
     """
@@ -183,6 +171,38 @@ def dict_remove_key(d, k):
     return dd
 
 
+def dict_remove_value(d, v):
+    """
+    Recursively remove keys with a certain value from a dict
+    :param d: the dictionary
+    :param v: value which should be removed
+    :return: formatted dictionary
+    """
+    dd = dict()
+    for key, value in d.items():
+        if not value == v:
+            if isinstance(value, dict):
+                dd[key] = dict_remove_value(value, v)
+            elif isinstance(value, list):
+                dd[key] = [dict_remove_value(i, v) for i in value]
+            else:
+                dd[key] = value
+    return dd
+
+
+def dict_as_tuple_list(d, as_list=False):
+    """
+    Format a dict to a list of tuples
+    :param d: the dictionary
+    :param as_list: return a list of lists rather than a list of tuples
+    :return: formatted dictionary list
+    """
+    dd = list()
+    for k, v in d.items():
+        dd.append([k, v] if as_list else (k, v))
+    return dd
+
+
 def tuple_search(t, i, v):
     """
     Search tuple array by index and value
@@ -208,7 +228,7 @@ def string_insert(str1, str2, i):
     return str1[:i] + str2 + str1[i:]
 
 
-def format_datetime(t=None):
+def format_datetime(t: datetime = None):
     """
     Format a datetime object into yyyy-MM-dd hh:mm:ss
     :param t: datetime object, default: now
@@ -217,7 +237,7 @@ def format_datetime(t=None):
     return (datetime.now() if t is None else t).strftime('%Y-%m-%d %H:%M:%S')
 
 
-def format_date(t=None):
+def format_date(t: datetime = None):
     """
     Format a datetime object into yyyy-MM-dd
     :param t: datetime object, default: now
@@ -226,7 +246,7 @@ def format_date(t=None):
     return (datetime.now() if t is None else t).strftime('%Y-%m-%d')
 
 
-def format_time(t=None):
+def format_time(t: datetime = None):
     """
     Format a datetime object into hh:mm:ss
     :param t: datetime object, default: now
@@ -253,29 +273,25 @@ def progress(count, total, prefix='', suffix='', length=60):
     sys.stdout.flush()
 
 
-def test():
-    def modify(u):
-        return str(u + 1)
-
-    log(digits(3.1415926))
-    log(random_chars(3))
-    log(random_letters(3))
-    log(random_numbers(3))
-    log(dict_search([{'a': 1, 'b': 2}, {'a': 3, 'b': 4}], 'a', 1))
-    log(dict_merge([{'a': 1, 'b': 2}, {'a': 3, 'b': 4}], [{'a': 1, 'b': 3}, {'a': 2, 'b': 4}], 'a'))
-    log(dict_sort([{'a': 1, 'b': 2}, {'a': 3, 'b': 4}, {'a': 1, 'b': 3}, {'a': 2, 'b': 4}], 'a'))
-    log(dict_top([{'a': 1, 'b': 2}, {'a': 3, 'b': 4}, {'a': 1, 'b': 3}, {'a': 2, 'b': 4}], 'a', 2, reverse=True))
-    log(dict_flatten({'a': 1, 'b': 'b', 'c': [1, 2], 'd': {'a': 1, 'b': 2}, 'e': [{'a': 1, 'b': 2}, {'a': 3, 'b': 4}]}))
-    log(dict_format_type({'a': 1, 'b': 'b', 'c': [1, 2], 'd': {'a': 1, 'b': 2}, 'e': [{'a': 1, 'b': 2}, {'a': 3, 'b': 4}]}, int, modify))
-    log(tuple_search([('a', 1), ('b', 2), ('a', 3), ('b', 4)], 1, 1))
-    log(string_insert('apple', ' strugg', 3))
-    log(format_datetime(datetime.fromtimestamp(datetime.now().timestamp() + 3600 * 24)))
-    log(format_date())
-    log(format_time())
-    for x in range(100):
-        progress(x, 100)
-        time.sleep(0.02)
-
-
 if __name__ == "__main__":
-    test()
+    print(digits(3.1415926))
+    print(random_chars(3))
+    print(random_letters(3))
+    print(random_numbers(3))
+    print(dict_search([{'a': 1, 'b': 2}, {'a': 3, 'b': 4}], 'a', 1))
+    print(dict_merge([{'a': 1, 'b': 2}, {'a': 3, 'b': 4}], [{'a': 1, 'b': 3}, {'a': 2, 'b': 4}], 'a'))
+    print(dict_sort([{'a': 1, 'b': 2}, {'a': 3, 'b': 4}, {'a': 1, 'b': 3}, {'a': 2, 'b': 4}], 'a'))
+    print(dict_top([{'a': 1, 'b': 2}, {'a': 3, 'b': 4}, {'a': 1, 'b': 3}, {'a': 2, 'b': 4}], 'a', 2, reverse=True))
+    print(dict_flatten({'a': 1, 'b': 'b', 'c': [1, 2], 'd': {'a': 1, 'b': 2}, 'e': [{'a': 1, 'b': 2}, {'a': 3, 'b': 4}]}))
+    print(dict_format_type({'a': 1, 'b': 'b', 'c': [1, 2], 'd': {'a': 1, 'b': 2}, 'e': [{'a': 1, 'b': 2}, {'a': 3, 'b': 4}]}, int, lambda _i: _i + 1))
+    print(dict_remove_key({'a': 1, 'b': 2}, 'a'))
+    print(dict_remove_value({'a': 1, 'b': 2}, 2))
+    print(dict_as_tuple_list({'a': 1, 'b': 2}))
+    print(tuple_search([('a', 1), ('b', 2), ('a', 3), ('b', 4)], 1, 1))
+    print(string_insert('apple', ' banana', 3))
+    print(format_datetime(datetime.fromtimestamp(datetime.now().timestamp() + 3600 * 24)))
+    print(format_date())
+    print(format_time())
+    for _i in range(100):
+        progress(_i, 100)
+        time.sleep(0.02)

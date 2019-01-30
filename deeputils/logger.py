@@ -23,7 +23,7 @@ class Formatter(logging.Formatter):
         return result
 
 
-def setup_log(level=logging.DEBUG, path=None, tag: str = None):
+def setup_log(level=logging.INFO, path=None, tag: str = None):
     # Stream handler
     handler = logging.StreamHandler(sys.stdout)
     handler.setFormatter(Formatter())
@@ -40,5 +40,9 @@ def setup_log(level=logging.DEBUG, path=None, tag: str = None):
 
 
 if __name__ == "__main__":
-    setup_log(path='./log/', tag='deeputils')
-    logging.getLogger().debug('The logging module has been a part of Python’s Standard Library since version %.1f.', 2.3)
+    setup_log(level=logging.DEBUG, path='./log/', tag='deeputils')
+    logging.debug('This is a DEBUG message.')
+    logging.info('This is an INFO message.')
+    logging.warning('This is a WARNING message.')
+    logging.error('This is an ERROR message.')
+    logging.critical('This is an CRITICAL message.')
