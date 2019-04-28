@@ -1,9 +1,15 @@
+import json
 import random
 import string
 import sys
 import time
 from datetime import datetime
 from heapq import heappush, heappop
+
+
+class Dict2StrSafe:
+    def __str__(self):
+        return json.dumps(self.__dict__, default=lambda o: str(o))
 
 
 def digits(n):
