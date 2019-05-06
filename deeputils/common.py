@@ -13,7 +13,7 @@ class Dict2StrSafe:
         s = dict()
         for k, v in self.__dict__.items():
             if isinstance(v, list):
-                s[k] = [i.__dict__ for i in v]
+                s[k] = [i.__dict__ if isinstance(i, Dict2StrSafe) else i for i in v]
             else:
                 s[k] = v
         return json.dumps(s, default=lambda i: str(i))
