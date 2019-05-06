@@ -8,8 +8,15 @@ from heapq import heappush, heappop
 
 
 class Dict2StrSafe:
+    # A class that correctly converts self.__dict__ to json string without errors
     def __str__(self):
-        return json.dumps(self.__dict__, default=lambda o: str(o))
+        s = dict()
+        for k, v in self.__dict__.items():
+            if isinstance(v, list):
+                s[k] = [i.__dict__ for i in v]
+            else:
+                s[k] = v
+        return json.dumps(s, default=lambda i: str(i))
 
 
 def digits(n):
