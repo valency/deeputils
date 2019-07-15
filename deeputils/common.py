@@ -4,6 +4,7 @@ import string
 import sys
 import time
 from datetime import datetime
+from decimal import Decimal, InvalidOperation
 from heapq import heappush, heappop
 
 
@@ -17,6 +18,21 @@ class Dict2StrSafe:
             else:
                 s[k] = v
         return json.dumps(s, default=lambda i: str(i))
+
+
+def decimal_safe(i):
+    """
+    Returns the decimal format of a given number
+    :param i: the number
+    :return: the decimal format of the number
+    """
+    if not isinstance(i, Decimal):
+        try:
+            return Decimal(repr(i))
+        except InvalidOperation:
+            return Decimal(i)
+    else:
+        return i
 
 
 def digits(n):
@@ -288,6 +304,7 @@ def progress(count, total, prefix='', suffix='', length=60):
 
 if __name__ == "__main__":
     print(digits(3.1415926))
+    print(decimal_safe(3.1415926), decimal_safe('3.1415926'))
     print(random_chars(3))
     print(random_letters(3))
     print(random_numbers(3))

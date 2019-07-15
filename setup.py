@@ -7,7 +7,7 @@ with open(path.join(path.abspath(path.dirname(__file__)), 'README.rst'), encodin
 
 setup(
     name='deeputils',
-    version='2.5.8',
+    version='2.7.15',
     packages=find_packages(),
     include_package_data=True,
     url='https://github.com/valency/deeputils/',
