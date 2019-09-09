@@ -26,7 +26,9 @@ def decimal_safe(i):
     :param i: the number
     :return: the decimal format of the number
     """
-    if not isinstance(i, Decimal):
+    if i is None:
+        return None
+    elif not isinstance(i, Decimal):
         try:
             return Decimal(repr(i))
         except InvalidOperation:
