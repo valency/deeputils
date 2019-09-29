@@ -32,7 +32,7 @@ def setup_log(level=logging.INFO, path=None, tag: str = None):
     if path is not None:
         if not os.path.exists(path):
             os.makedirs(path)
-        handler = logging.FileHandler("{}/{}{}.log".format(path, tag + '-' if tag is not None else '', datetime.utcnow().timestamp()))
+        handler = logging.FileHandler("{}/{}{}.log".format(path, tag + '-' if tag is not None else '', datetime.utcnow().timestamp()), encoding='utf-8')
         handler.setFormatter(logging.Formatter('[%(asctime)s] %(levelname)s: %(message)s'))
         logging.root.addHandler(handler)
     # Set logging level
