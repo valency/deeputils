@@ -192,16 +192,16 @@ def dict_remove_key(d, k):
     :param k: key which should be removed
     :return: formatted dictionary
     """
-    dd = dict()
-    for key, value in d.items():
-        if not key == k:
-            if isinstance(value, dict):
+    if isinstance(d, dict):
+        dd = dict()
+        for key, value in d.items():
+            if not key == k:
                 dd[key] = dict_remove_key(value, k)
-            elif isinstance(value, list):
-                dd[key] = [dict_remove_key(i, k) for i in value]
-            else:
-                dd[key] = value
-    return dd
+        return dd
+    elif isinstance(d, list):
+        return [dict_remove_key(i, k) for i in d]
+    else:
+        return d
 
 
 def dict_remove_value(d, v):
