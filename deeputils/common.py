@@ -4,8 +4,9 @@ import string
 import sys
 import time
 from datetime import datetime
-from decimal import Decimal, InvalidOperation
+from decimal import Decimal, InvalidOperation, ROUND_HALF_DOWN
 from heapq import heappush, heappop
+from math import pi
 
 
 class Dict2StrSafe:
@@ -37,6 +38,25 @@ def decimal_safe(i):
             return Decimal(i)
     else:
         return i
+
+
+def decimal_round(i, r=None, d=ROUND_HALF_DOWN):
+    """
+    Round a decimal number with a given unit
+    :param i: the decimal number
+    :param r: the unit, e.g., 1, 0.5
+    :param d: rounding direction, see decimal.ROUND_* for details
+    :return: the rounded number
+    """
+    if i is not None:
+        i = decimal_safe(i)
+        if r is not None:
+            r = decimal_safe(r)
+            return (i / r).to_integral_exact(rounding=d) * r
+        else:
+            return i
+    else:
+        return None
 
 
 def digits(n):
@@ -307,8 +327,9 @@ def progress(count, total, prefix='', suffix='', length=60):
 
 
 if __name__ == "__main__":
-    print(digits(3.1415926))
-    print(decimal_safe(3.1415926), decimal_safe('3.1415926'))
+    print(digits(pi))
+    print(decimal_safe(pi), decimal_safe(str(pi)))
+    print(decimal_round(pi, 0.5), decimal_round(pi + 0.5, 0.5))
     print(random_chars(3))
     print(random_letters(3))
     print(random_numbers(3))
