@@ -95,6 +95,28 @@ def random_numbers(n):
     return ''.join(random.SystemRandom().choice(string.digits) for _ in range(n))
 
 
+def dict_retrieve_keys(d, k, dive=True):
+    """
+    Search dict and find all items with certain keys
+    :param d: dictionary
+    :param k: key
+    :param dive: search value even if key is already matched
+    :return: list of items
+    """
+    results = []
+    for key, value in d.items():
+        if key == k:
+            results.append(value)
+        if dive:
+            if isinstance(value, dict):
+                results += dict_retrieve_keys(value, k, dive)
+            elif isinstance(value, list):
+                for item in value:
+                    if isinstance(item, dict):
+                        results += dict_retrieve_keys(item, k, dive)
+    return results
+
+
 def dict_search(d, k, v):
     """
     Search dictionary list by key and value
@@ -333,6 +355,7 @@ if __name__ == "__main__":
     print(random_chars(3))
     print(random_letters(3))
     print(random_numbers(3))
+    print(dict_retrieve_keys({'a': 1, 'b': {'a': 3, 'b': 4}}, 'a'))
     print(dict_search([{'a': 1, 'b': 2}, {'a': 3, 'b': 4}], 'a', 1))
     print(dict_merge([{'a': 1, 'b': 2}, {'a': 3, 'b': 4}], [{'a': 1, 'b': 3}, {'a': 2, 'b': 4}], 'a'))
     print(dict_sort([{'a': 1, 'b': 2}, {'a': 3, 'b': 4}, {'a': 1, 'b': 3}, {'a': 2, 'b': 4}], 'a'))
